@@ -1,30 +1,91 @@
-# FoodLens web app
+# FoodLens 🍽️📸
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
+**FoodLens** is an innovative hackathon project designed to help users track their nutrition and food intake using AI-powered food recognition. Simply capture your meal, and FoodLens analyzes the food, providing nutritional insights and a history of your eating habits—all in a beautiful, modern web app.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/ss-projects-3f34359e/v0-food-lens-web-app)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/fEMCz5fgnSy)
+---
 
-## Overview
+## 🚀 Features
 
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
+- **AI Food Recognition:** Instantly analyze food items from photos using advanced AI models.
+- **Nutritional Tracking:** Get detailed nutritional breakdowns (calories, macros, etc.) for each meal.
+- **Food History:** Maintain a visual log of your meals and track your eating patterns over time.
+- **Modern UI:** Sleek, responsive interface built with Next.js and Tailwind CSS.
+- **Privacy First:** All analysis happens securely—your data stays yours.
 
-## Deployment
+---
 
-Your project is live at:
+## 🛠️ Tech Stack
 
-**[https://vercel.com/ss-projects-3f34359e/v0-food-lens-web-app](https://vercel.com/ss-projects-3f34359e/v0-food-lens-web-app)**
+- **Next.js 14** – App Router, API routes
+- **TypeScript** – Type safety everywhere
+- **Tailwind CSS** – Rapid, beautiful UI
+- **pnpm** – Fast, efficient package management
+- **Custom AI/ML** – Food analysis logic
 
-## Build your app
+---
 
-Continue building your app on:
+## 📸 How It Works
 
-**[https://v0.app/chat/projects/fEMCz5fgnSy](https://v0.app/chat/projects/fEMCz5fgnSy)**
+1. **Capture:** Use your device camera to snap a photo of your meal.
+2. **Analyze:** FoodLens detects and analyzes the food items.
+3. **Track:** View nutritional info and add the meal to your food history.
 
-## How It Works
+---
 
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+## 🏁 Getting Started
+
+1. **Clone the repo:**
+	```bash
+	git clone https://github.com/shreyanshrathaur/Foodelns.git
+	cd Foodelns
+	```
+2. **Install dependencies:**
+	```bash
+	pnpm install
+	```
+3. **Run the app:**
+	```bash
+	pnpm dev
+	```
+4. **Open in browser:**
+	Visit [http://localhost:3000](http://localhost:3000)
+
+---
+
+## ✨ Screenshots
+
+![FoodLens Screenshot](public/placeholder.jpg)
+
+---
+
+## 🤖 AI & Food Analysis
+
+FoodLens uses a custom AI model to recognize food items and estimate nutritional values. The analysis is fast, private, and works directly in your browser.
+
+---
+
+## 💡 Inspiration
+
+Built for a hackathon to empower people to make healthier food choices with the help of technology. FoodLens aims to make nutrition tracking effortless, fun, and visually engaging.
+
+---
+
+## 🙌 Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+## 📄 License
+
+MIT License. See `LICENSE` for more information.
+
+---
+
+## 👤 Author
+
+- [Shreyansh Rathaur](https://github.com/shreyanshrathaur)
+
+---
+
+> **FoodLens: See your food, know your nutrition.**
