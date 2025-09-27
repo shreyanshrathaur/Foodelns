@@ -10,6 +10,11 @@ export const metadata: Metadata = {
   title: "FoodLens – AI Food Detector",
   description: "Analyze your food with AI-powered nutrition detection and health insights",
   generator: "v0.app",
+  icons: {
+    icon: "/favicon.jpg",
+    shortcut: "/favicon.jpg",
+    apple: "/favicon.jpg",
+  },
 }
 
 export default function RootLayout({
