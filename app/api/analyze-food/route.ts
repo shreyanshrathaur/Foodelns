@@ -46,8 +46,13 @@ async function analyzeFood(base64Image: string) {
     console.log("[v0] Starting Gemini API call...")
 
     if (!process.env.GEMINI_API_KEY) {
-      throw new Error("GEMINI_API_KEY environment variable is not set")
+      console.error("[v0] GEMINI_API_KEY not found in environment variables")
+      throw new Error(
+        "GEMINI_API_KEY environment variable is not set. Please add your Gemini API key in Project Settings > Environment Variables.",
+      )
     }
+
+    console.log("[v0] GEMINI_API_KEY found, proceeding with API call...")
 
     const result = await model.generateContent([
       prompt,
@@ -74,9 +79,14 @@ async function analyzeFood(base64Image: string) {
   } catch (error) {
     console.error("[v0] Gemini API error:", error)
 
+    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred"
+    const isApiKeyError = errorMessage.includes("GEMINI_API_KEY")
+
     return {
-      food_name: "Food Analysis Unavailable",
-      description: "Unable to analyze the food image at this time. Please check your API configuration.",
+      food_name: isApiKeyError ? "API Key Required" : "Food Analysis Unavailable",
+      description: isApiKeyError
+        ? "To use food analysis, please add your GEMINI_API_KEY in Project Settings > Environment Variables. You can get a free API key from Google AI Studio (ai.google.dev)."
+        : "Unable to analyze the food image at this time. Please try again.",
       confidence: "Low",
       nutrition: {
         calories: 0,
@@ -89,16 +99,18 @@ async function analyzeFood(base64Image: string) {
         calcium_mg: 0,
         iron_mg: 0,
       },
-      ingredients: ["Analysis unavailable"],
+      ingredients: [isApiKeyError ? "API key required" : "Analysis unavailable"],
       health_insights: [
-        "Food analysis is currently unavailable",
-        "Please ensure your GEMINI_API_KEY is properly configured",
-        "Try again in a few moments",
+        isApiKeyError ? "Add your GEMINI_API_KEY to enable food analysis" : "Food analysis is currently unavailable",
+        isApiKeyError
+          ? "Get a free API key from Google AI Studio (ai.google.dev)"
+          : "Please ensure your API key is properly configured",
+        "Try again after adding the API key",
       ],
       dietary_tags: [],
       serving_size: "Unknown",
       preparation_method: "Unable to determine",
-      error: error instanceof Error ? error.message : "Unknown error occurred",
+      error: errorMessage,
     }
   }
 }
