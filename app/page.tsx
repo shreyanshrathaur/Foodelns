@@ -1,10 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Camera, Upload, Sparkles, History, Zap, AlertCircle, ExternalLink, Search } from "lucide-react"
+import { Camera, Upload, Sparkles, History, Zap, Search } from "lucide-react"
 import { CameraCapture } from "@/components/camera-capture"
 import { FoodAnalysis } from "@/components/food-analysis"
 import { FoodHistory } from "@/components/food-history"
@@ -14,15 +13,6 @@ export default function FoodLensApp() {
   const [currentView, setCurrentView] = useState<"home" | "camera" | "search" | "analysis" | "history">("home")
   const [analysisData, setAnalysisData] = useState<any>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
-  const [showApiKeyAlert, setShowApiKeyAlert] = useState(false)
-
-  useEffect(() => {
-    const hasShownAlert = localStorage.getItem("hasShownApiKeyAlert")
-    if (!hasShownAlert) {
-      setShowApiKeyAlert(true)
-      localStorage.setItem("hasShownApiKeyAlert", "true")
-    }
-  }, [])
 
   const handleImageCapture = async (imageData: string) => {
     setIsAnalyzing(true)
@@ -37,10 +27,6 @@ export default function FoodLensApp() {
 
       const result = await response.json()
       setAnalysisData(result)
-
-      if (result.error && result.error.includes("GEMINI_API_KEY")) {
-        setShowApiKeyAlert(true)
-      }
 
       try {
         const history = JSON.parse(localStorage.getItem("foodHistory") || "[]")
@@ -70,10 +56,6 @@ export default function FoodLensApp() {
 
       const result = await response.json()
       setAnalysisData(result)
-
-      if (result.error && result.error.includes("GEMINI_API_KEY")) {
-        setShowApiKeyAlert(true)
-      }
 
       try {
         const history = JSON.parse(localStorage.getItem("foodHistory") || "[]")
@@ -138,40 +120,6 @@ export default function FoodLensApp() {
 
       {/* Hero Section */}
       <main className="container mx-auto px-4 py-12">
-        {showApiKeyAlert && (
-          <Alert className="mb-8 border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950">
-            <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-            <AlertDescription className="text-amber-800 dark:text-amber-200">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <strong className="font-medium">Setup Required:</strong> To use AI food analysis, add your{" "}
-                  <code className="bg-amber-100 dark:bg-amber-900 px-1 py-0.5 rounded text-xs">GEMINI_API_KEY</code> in
-                  Project Settings → Environment Variables.
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => window.open("https://ai.google.dev/", "_blank")}
-                    className="text-amber-700 border-amber-300 hover:bg-amber-100 dark:text-amber-300 dark:border-amber-700 dark:hover:bg-amber-900"
-                  >
-                    <ExternalLink className="w-3 h-3 mr-1" />
-                    Get API Key
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowApiKeyAlert(false)}
-                    className="text-amber-700 hover:bg-amber-100 dark:text-amber-300 dark:hover:bg-amber-900"
-                  >
-                    Dismiss
-                  </Button>
-                </div>
-              </div>
-            </AlertDescription>
-          </Alert>
-        )}
-
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
             <Zap className="w-4 h-4" />
