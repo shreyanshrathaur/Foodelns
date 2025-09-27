@@ -11,9 +11,9 @@ export const metadata: Metadata = {
   description: "Analyze your food with AI-powered nutrition detection and health insights",
   generator: "v0.app",
   icons: {
-    icon: "/favicon.jpg",
-    shortcut: "/favicon.jpg",
-    apple: "/favicon.jpg",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
 }
 
