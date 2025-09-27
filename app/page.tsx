@@ -4,19 +4,19 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Camera, Upload, Sparkles, History, Zap, AlertCircle, ExternalLink } from "lucide-react"
+import { Camera, Upload, Sparkles, History, Zap, AlertCircle, ExternalLink, Search } from "lucide-react"
 import { CameraCapture } from "@/components/camera-capture"
 import { FoodAnalysis } from "@/components/food-analysis"
 import { FoodHistory } from "@/components/food-history"
+import { FoodSearch } from "@/components/food-search"
 
 export default function FoodLensApp() {
-  const [currentView, setCurrentView] = useState<"home" | "camera" | "analysis" | "history">("home")
+  const [currentView, setCurrentView] = useState<"home" | "camera" | "search" | "analysis" | "history">("home")
   const [analysisData, setAnalysisData] = useState<any>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [showApiKeyAlert, setShowApiKeyAlert] = useState(false)
 
   useEffect(() => {
-    // Check if we've shown the API key alert before
     const hasShownAlert = localStorage.getItem("hasShownApiKeyAlert")
     if (!hasShownAlert) {
       setShowApiKeyAlert(true)
@@ -57,8 +57,45 @@ export default function FoodLensApp() {
     }
   }
 
+  const handleFoodSearch = async (foodName: string) => {
+    setIsAnalyzing(true)
+    setCurrentView("analysis")
+
+    try {
+      const response = await fetch("/api/search-food", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ foodName }),
+      })
+
+      const result = await response.json()
+      setAnalysisData(result)
+
+      if (result.error && result.error.includes("GEMINI_API_KEY")) {
+        setShowApiKeyAlert(true)
+      }
+
+      try {
+        const history = JSON.parse(localStorage.getItem("foodHistory") || "[]")
+        history.unshift({ ...result, timestamp: Date.now(), searchQuery: foodName })
+        localStorage.setItem("foodHistory", JSON.stringify(history.slice(0, 20)))
+      } catch (storageError) {
+        console.error("Failed to save to history:", storageError)
+      }
+    } catch (error) {
+      console.error("Search failed:", error)
+      setAnalysisData(null)
+    } finally {
+      setIsAnalyzing(false)
+    }
+  }
+
   if (currentView === "camera") {
     return <CameraCapture onCapture={handleImageCapture} onBack={() => setCurrentView("home")} />
+  }
+
+  if (currentView === "search") {
+    return <FoodSearch onSearch={handleFoodSearch} onBack={() => setCurrentView("home")} isSearching={isAnalyzing} />
   }
 
   if (currentView === "analysis") {
@@ -146,8 +183,8 @@ export default function FoodLensApp() {
           </h1>
 
           <p className="text-xl text-muted-foreground text-pretty mb-8 leading-relaxed">
-            Instantly analyze your food with advanced AI. Get detailed nutrition information, health insights, and
-            personalized recommendations with just a photo.
+            Instantly analyze your food with advanced AI. Take a photo, upload an image, or search by name to get
+            detailed nutrition information, health insights, and personalized recommendations.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -157,7 +194,11 @@ export default function FoodLensApp() {
               className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-lg font-medium"
             >
               <Camera className="w-5 h-5 mr-2" />
-              Start Analyzing
+              Take Photo
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => setCurrentView("search")} className="px-8 py-3 text-lg">
+              <Search className="w-5 h-5 mr-2" />
+              Search Food
             </Button>
             <Button variant="outline" size="lg" onClick={() => setCurrentView("history")} className="px-8 py-3 text-lg">
               <History className="w-5 h-5 mr-2" />
@@ -180,21 +221,21 @@ export default function FoodLensApp() {
 
           <Card className="p-6 bg-card border-border/50 hover:border-border transition-colors">
             <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-              <Sparkles className="w-6 h-6 text-primary" />
+              <Search className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="text-lg font-semibold mb-2 text-card-foreground">Nutrition Insights</h3>
+            <h3 className="text-lg font-semibold mb-2 text-card-foreground">Food Search</h3>
             <p className="text-muted-foreground text-pretty">
-              Get comprehensive nutrition data including calories, macros, and personalized health tips.
+              Search any food by name to get instant nutrition data and health insights without taking photos.
             </p>
           </Card>
 
           <Card className="p-6 bg-card border-border/50 hover:border-border transition-colors">
             <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-              <History className="w-6 h-6 text-primary" />
+              <Sparkles className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="text-lg font-semibold mb-2 text-card-foreground">Track Progress</h3>
+            <h3 className="text-lg font-semibold mb-2 text-card-foreground">Nutrition Insights</h3>
             <p className="text-muted-foreground text-pretty">
-              Keep a history of analyzed foods and track your nutrition patterns over time.
+              Get comprehensive nutrition data including calories, macros, and personalized health tips.
             </p>
           </Card>
         </div>
@@ -203,7 +244,7 @@ export default function FoodLensApp() {
         <div className="text-center mt-16 p-8 bg-card/50 rounded-2xl border border-border/50">
           <h2 className="text-2xl font-bold mb-4 text-card-foreground">Ready to analyze your food?</h2>
           <p className="text-muted-foreground mb-6 text-pretty">
-            Take a photo or upload an image to get started with AI-powered nutrition analysis.
+            Take a photo, upload an image, or search by name to get started with AI-powered nutrition analysis.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button
@@ -213,6 +254,10 @@ export default function FoodLensApp() {
             >
               <Camera className="w-5 h-5 mr-2" />
               Take Photo
+            </Button>
+            <Button variant="outline" size="lg" onClick={() => setCurrentView("search")}>
+              <Search className="w-5 h-5 mr-2" />
+              Search Food
             </Button>
             <Button variant="outline" size="lg" onClick={() => setCurrentView("camera")}>
               <Upload className="w-5 h-5 mr-2" />
