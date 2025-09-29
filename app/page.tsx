@@ -8,7 +8,6 @@ import { CameraCapture } from "@/components/camera-capture"
 import { FoodAnalysis } from "@/components/food-analysis"
 import { FoodHistory } from "@/components/food-history"
 import { FoodSearch } from "@/components/food-search"
-import { PWAInstall } from "@/components/pwa-install"
 
 export default function FoodLensApp() {
   const [currentView, setCurrentView] = useState<"home" | "camera" | "search" | "analysis" | "history">("home")
@@ -215,8 +214,6 @@ export default function FoodLensApp() {
           </div>
         </div>
       </main>
-
-      <PWAInstall />
     </div>
   )
 }
