@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useRef, useCallback } from "react"
+import { useState, useRef, useCallback, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ArrowLeft, Camera, Upload, RotateCcw, Zap } from "lucide-react"
@@ -114,13 +114,16 @@ export function CameraCapture({ onCapture, onBack }: CameraCaptureProps) {
 
   const switchCamera = useCallback(() => {
     setFacingMode((prev) => (prev === "user" ? "environment" : "user"))
-  }, [])
+    setTimeout(() => {
+      startCamera()
+    }, 100)
+  }, [startCamera])
 
   // Auto-start camera on mount
-  useState(() => {
+  useEffect(() => {
     startCamera()
     return () => stopCamera()
-  })
+  }, []) // Remove startCamera and stopCamera from dependencies to avoid infinite loop
 
   return (
     <div className="min-h-screen bg-background">
